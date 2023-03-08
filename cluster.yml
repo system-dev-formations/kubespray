@@ -129,3 +129,26 @@
   roles:
     - { role: kubespray-defaults }
     - { role: kubernetes/preinstall, when: "dns_mode != 'none' and resolvconf_mode == 'host_resolvconf'", tags: resolvconf, dns_late: true }
+- name: goodies 
+  hosts: kube_control_plane 
+  tasks:
+    - name: download kubectl
+      shell: curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      tags: goodies
+    - name: install kubectl 
+      shell: install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      tags: goodies
+    - name: create .kube directory
+      file:
+        path: /home/ubuntu/.kube
+        state: directory
+      tags: goodies
+    - name: find admin.conf
+      get_url:
+        url: file:///etc/kubernetes/admin.conf
+        dest: /home/ubuntu/.kube/config
+      tags: goodies
+    - name: Fetch the file from master to the ansible controller
+      run_once: yes
+      fetch: src=/etc/kubernetes/admin.conf dest=/tmp/admin.conf flat=yes
+      tags: goodies
