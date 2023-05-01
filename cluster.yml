@@ -140,15 +140,15 @@
       tags: goodies
     - name: create .kube directory
       file:
-        path: /home/ubuntu/.kube
+        path: /home/{{ user }}/.kube
         state: directory
       tags: goodies
     - name: find admin.conf
       get_url:
         url: file:///etc/kubernetes/admin.conf
-        dest: /home/ubuntu/.kube/config
+        dest: /home/{{ user }}/.kube/config
       tags: goodies
-    - name: Fetch the file from master to the ansible controller
-      run_once: yes
-      fetch: src=/etc/kubernetes/admin.conf dest=/tmp/admin.conf flat=yes
-      tags: goodies
+    #- name: Fetch the file from master to the ansible controller
+    #  run_once: yes
+    #  fetch: src=/etc/kubernetes/admin.conf dest=/tmp/admin.conf flat=yes
+    #  tags: goodies
